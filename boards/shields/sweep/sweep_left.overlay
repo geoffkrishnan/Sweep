@@ -1,5 +1,6 @@
 #include "sweep.dtsi"
 
+/* No encoder or trackpad hardware on this build.
 &left_encoder {
 	status = "okay";
 };
@@ -11,3 +12,4 @@
 &glidepoint_listener {
 	status = "okay";
 };
+*/

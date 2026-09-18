@@ -7,22 +7,19 @@ manifest:
   - name: nxtkb
     url-base: https://github.com/nxtkb
   projects:
+  # If you bump this revision, also update the pin in
+  # .github/workflows/build.yml to match.
   - name: zmk
     remote: zmkfirmware
     revision: cb615aee9a7c427e251f2ab62080c1a44a165da9
     import: app/west.yml
-  - name: zmk-vfx-sweep-pro-display
-    remote: nxtkb
-    revision: afae3dcf7d94113dfbeb19fb4e4fbd08d6564008
-  - name: zmk-feature-codex-micro
-    remote: nxtkb
-    revision: 0240a936280eb9ecec769279715999968b9760cd
   - name: zmk-behavior-report
     remote: nxtkb
     revision: 476f43da1f98b4a6150c9c0e499a257bd64a29a0
     import: west.yml
-  - name: cirque-input-module
-    remote: nxtkb
-    revision: 8af03a4c061580c14ec8745caf0fa2dd3fc7f042
+  # No trackpad hardware on this build.
+  # - name: cirque-input-module
+  #   remote: nxtkb
+  #   revision: 8af03a4c061580c14ec8745caf0fa2dd3fc7f042
   self:
     path: config

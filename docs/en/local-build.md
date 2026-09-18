@@ -9,9 +9,9 @@ cd "$NXTKB_ROOT/zmkfirmware/zmk"
 
 The following commands assume you are running them from the ZMK west workspace root. `$NXTKB_ROOT/Sweep-Pro` is the keyboard config and shield repository, not the west workspace root. Do not run `west build` directly inside the `Sweep-Pro` directory.
 
-The local build now uses the official `zmkfirmware/zmk` checkout. The Sweep-Pro display status screen has been split out of the old `lynnlee0522/zmk` fork into the standalone `zmk-vfx-sweep-pro-display` module, so builds with the display need that module in `ZMK_EXTRA_MODULES` and `sweep_display` in the `SHIELD` list.
+The local build now uses the official `zmkfirmware/zmk` checkout.
 
-All Sweep-Pro hardware variants share one `config/sweep.keymap`. The display and trackpad are optional shields that get composed into the build, so one repository can produce 4 half-keyboard firmware files. Users only need to pick the UF2 files matching their hardware.
+All Sweep-Pro hardware variants share one `config/sweep.keymap`. The trackpad is an optional shield that gets composed into the build, so one repository can produce the half-keyboard firmware files. Users only need to pick the UF2 files matching their hardware.
 
 ## Dependencies
 
@@ -83,27 +83,24 @@ Common parameters:
 
 ```shell
 export NXTKB_ROOT="/path/to/nxtkb"
-EXTRA_MODULES="$NXTKB_ROOT/Sweep-Pro;$NXTKB_ROOT/zmk-vfx-sweep-pro-display;$NXTKB_ROOT/cirque-input-module;$NXTKB_ROOT/zmk-behavior-report;$NXTKB_ROOT/zmk-behavior-send-string"
+EXTRA_MODULES="$NXTKB_ROOT/Sweep-Pro;$NXTKB_ROOT/cirque-input-module;$NXTKB_ROOT/zmk-behavior-report;$NXTKB_ROOT/zmk-behavior-send-string"
 ZMK_CONFIG_DIR="$NXTKB_ROOT/Sweep-Pro/config"
 ```
 
-The recommended output set is 4 half-keyboard firmware files:
+The recommended output set is 3 half-keyboard firmware files:
 
 | Firmware | Shield combination | Use |
 | :--- | :--- | :--- |
-| `sweep_left` | `sweep_left` | Base left half, no display |
-| `sweep_left_display` | `sweep_left sweep_left_display_hw sweep_display` | Left half with e-ink display |
+| `sweep_left` | `sweep_left` | Base left half |
 | `sweep_right` | `sweep_right` | Base right half, no trackpad |
 | `sweep_right_trackpad` | `sweep_right sweep_right_trackpad` | Right half with Cirque trackpad |
 
-Use these combinations for the 4 keyboard variants:
+Use these combinations for the 2 keyboard variants:
 
 | Keyboard variant | Left UF2 | Right UF2 |
 | :--- | :--- | :--- |
 | Basic | `sweep_left` | `sweep_right` |
-| E-ink | `sweep_left_display` | `sweep_right` |
 | Trackpad | `sweep_left` | `sweep_right_trackpad` |
-| Flagship | `sweep_left_display` | `sweep_right_trackpad` |
 
 Base left half. Studio RPC over USB UART is useful for ZMK Studio remapping:
 
@@ -111,16 +108,6 @@ Base left half. Studio RPC over USB UART is useful for ZMK Studio remapping:
 west build -s app -p -d build/sweep_left -b nice_nano//zmk \
     -S studio-rpc-usb-uart -- \
     -DSHIELD=sweep_left \
-    -DZMK_EXTRA_MODULES="$EXTRA_MODULES" \
-    -DZMK_CONFIG="$ZMK_CONFIG_DIR"
-```
-
-Left half with display. `sweep_left_display_hw` provides the e-ink hardware node, and `sweep_display` provides the custom status screen UI:
-
-```shell
-west build -s app -p -d build/sweep_left_display -b nice_nano//zmk \
-    -S studio-rpc-usb-uart -- \
-    -DSHIELD="sweep_left sweep_left_display_hw sweep_display" \
     -DZMK_EXTRA_MODULES="$EXTRA_MODULES" \
     -DZMK_CONFIG="$ZMK_CONFIG_DIR"
 ```
@@ -149,7 +136,6 @@ After a successful build, the firmware files are:
 
 ```text
 build/sweep_left/zephyr/zmk.uf2
-build/sweep_left_display/zephyr/zmk.uf2
 build/sweep_right/zephyr/zmk.uf2
 build/sweep_right_trackpad/zephyr/zmk.uf2
 ```
@@ -158,70 +144,11 @@ For later builds with the same CMake parameters, you can usually reuse the build
 
 ```shell
 west build -d build/sweep_left
-west build -d build/sweep_left_display
 west build -d build/sweep_right
 west build -d build/sweep_right_trackpad
 ```
 
 If you change the shield, extra modules, snippets, or `ZMK_CONFIG`, rerun the full command with `-p` to regenerate the build directory.
-
-## Codex Micro USB and Bluetooth build
-
-This build adds a second vendor-defined USB HID interface and an encrypted vendor-defined
-HID-over-GATT report while preserving the normal ZMK USB/Bluetooth HID and Studio USB UART
-interfaces. Codex RPC follows ZMK's selected output endpoint, including the active Bluetooth
-profile. Inactive USB and Bluetooth hosts cannot take over the Codex session by retrying.
-
-The repository's default GitHub Actions workflow builds Codex-enabled central firmware and applies
-the required official-ZMK compatibility patch automatically. For a local checkout in which the
-Codex module is a west project, apply the same declared patch once before building:
-
-```shell
-west patch -sm zmk-feature-codex-micro apply
-```
-
-If the module is instead a sibling directory outside the west workspace, apply its patch to ZMK
-once with `git apply`, then add the module to the local module list:
-
-```shell
-git -C "$NXTKB_ROOT/zmkfirmware/zmk" apply --check \
-    "$NXTKB_ROOT/zmk-feature-codex-micro/zephyr/patches/zmk/zmk-usb-hid-interrupt-out.patch"
-git -C "$NXTKB_ROOT/zmkfirmware/zmk" apply \
-    "$NXTKB_ROOT/zmk-feature-codex-micro/zephyr/patches/zmk/zmk-usb-hid-interrupt-out.patch"
-CODEX_EXTRA_MODULES="$EXTRA_MODULES;$NXTKB_ROOT/zmk-feature-codex-micro"
-```
-
-Build the left half with display and both Codex transports:
-
-```shell
-west build -s app -p -d build/sweep_left_display_codex -b nice_nano//zmk \
-    -S studio-rpc-usb-uart \
-    -S nxtkb-codex-micro-usb \
-    -S nxtkb-codex-micro-ble \
-    -S nxtkb-codex-micro-compat-identity -- \
-    -DSHIELD="sweep_left sweep_left_display_hw sweep_display" \
-    -DZMK_EXTRA_MODULES="$CODEX_EXTRA_MODULES" \
-    -DZMK_CONFIG="$ZMK_CONFIG_DIR"
-```
-
-The module includes the optional `nxtkb-codex-micro-compat-identity` snippet for interoperability
-with the current ChatGPT desktop discovery. It changes only the USB VID/PID and Bluetooth PnP
-VID/PID. Product, manufacturer, Bluetooth, and Device Information names remain owned by the
-keyboard configuration. Sweep Pro release builds enable this snippet.
-
-These identifiers do not imply OpenAI certification or an identifier assignment to NXTKB or
-third-party keyboard makers. The discovery behavior is undocumented and may change. External
-integrators are responsible for determining whether they are authorized to distribute firmware
-using the compatibility identifiers.
-The right half continues to use the normal `sweep_right` or `sweep_right_trackpad` firmware.
-
-After first flashing a BLE-enabled build, forget the old keyboard in the host Bluetooth settings,
-clear the selected ZMK Bluetooth profile, and pair with the keyboard's configured name again. HID report maps are
-cached in the bond. Use the existing output-toggle key to prefer Bluetooth; a connected USB cable
-may still be used for charging. USB and Bluetooth keyboard connections remain active instead of
-disconnecting each other. Every connected computer keeps an independent Codex protocol and Agent
-state session; Codex keys and the display follow only the currently selected ZMK output. Switching
-back restores the last Agent state reported by that computer.
 
 ## Troubleshooting
 
