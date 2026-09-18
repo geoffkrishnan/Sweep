@@ -222,7 +222,7 @@
 			&kp Q  &kp W       &kp E        &kp R       &kp T      &kp Y  &kp U       &kp I        &kp O       &kp P
 			&kp A  &ht LALT S  &ht LGUI D  &ht LCTRL F  &kp G      &kp H  &ht RCTRL J  &ht RGUI K  &ht RALT L  &kp SEMI
 			&kp Z  &kp X       &kp C        &kp V       &kp B      &kp N  &kp M       &kp COMMA    &kp DOT     &kp ENTER
-			&trans  &lt LEF TAB  &mt LSHIFT SPACE      &kp BSPC  &lt RIG TAB  &trans
+			&trans  &lt LEF TAB  &kp BSPC      &mt LSHIFT SPACE  &lt RIG TAB  &trans
 			>;
 			/* No encoder hardware on this build.
 			sensor-bindings = <&inc_dec_kp C_VOL_DN C_VOL_UP &inc_dec_kp C_BRI_DEC C_BRI_UP>;
@@ -235,7 +235,7 @@
 			&kp SEMI  &kp COMMA   &kp DOT     &kp P        &kp Y      &kp F  &kp G        &kp C       &kp R       &kp L
 			&kp A     &ht LALT O  &ht LGUI E  &ht LCTRL U  &kp I      &kp D  &ht RCTRL H  &ht RGUI T  &ht RALT N  &kp S
 			&kp SQT   &kp Q       &kp J       &kp K        &kp X      &kp B  &kp M        &kp W       &kp V       &kp ENTER
-			&trans  &lt LEF TAB  &mt LSHIFT SPACE      &kp BSPC  &lt RIG TAB  &trans
+			&trans  &lt LEF TAB  &kp BSPC      &mt LSHIFT SPACE  &lt RIG TAB  &trans
 			>;
 			/* No encoder hardware on this build.
 			sensor-bindings = <&inc_dec_kp C_VOL_DN C_VOL_UP &inc_dec_kp C_BRI_DEC C_BRI_UP>;
@@ -248,7 +248,7 @@
 			&kp B  &kp L       &kp D        &kp W       &kp Z      &kp SQT  &kp F       &kp O        &kp U       &kp J
 			&kp N  &ht LALT R  &ht LCTRL T  &ht LGUI S  &kp G      &kp Y    &ht RGUI H  &ht RCTRL A  &ht RALT E  &kp I
 			&kp Q  &kp X       &kp M        &kp C       &kp V      &kp K    &kp P       &kp DOT      &kp MINUS   &kp ENTER
-			&trans  &lt LEF TAB  &mt LSHIFT SPACE      &kp BSPC  &lt RIG TAB  &trans
+			&trans  &lt LEF TAB  &kp BSPC      &mt LSHIFT SPACE  &lt RIG TAB  &trans
 			>;
 			/* No encoder hardware on this build.
 			sensor-bindings = <&inc_dec_kp C_VOL_DN C_VOL_UP &inc_dec_kp C_BRI_DEC C_BRI_UP>;
