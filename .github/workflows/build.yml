@@ -1,0 +1,19 @@
+name: Build firmware
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    # Pinned to the same ZMK commit config/west.yml builds against.
+    # If you bump the `zmk` revision in config/west.yml, update this pin to match.
+    uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@cb615aee9a7c427e251f2ab62080c1a44a165da9
+    with:
+      build_matrix_path: build.yaml
+      archive_name: sweep-pro-firmware

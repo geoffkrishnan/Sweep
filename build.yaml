@@ -1,0 +1,22 @@
+# This file generates the GitHub Actions matrix.
+# For simple board + shield combinations, add them to the top level board and
+# shield arrays, for more control, add individual board + shield combinations
+# to the `include` property. You can also use the `cmake-args` property to
+# pass flags to the build command, `snippet` to add a Zephyr snippet, and
+# `artifact-name` to assign a name to distinguish build outputs from each other:
+#
+---
+include:
+- board: nice_nano//zmk
+  shield: sweep_left
+  snippet: studio-rpc-usb-uart
+  artifact-name: sweep_left
+- board: nice_nano//zmk
+  shield: sweep_right
+  artifact-name: sweep_right
+# No trackpad hardware on this build.
+# - board: nice_nano//zmk
+#   shield: sweep_right sweep_right_trackpad
+#   artifact-name: sweep_right_trackpad
+- board: nice_nano//zmk
+  shield: settings_reset

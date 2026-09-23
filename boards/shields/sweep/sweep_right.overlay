@@ -1,0 +1,11 @@
+#include "sweep.dtsi"
+
+&default_transform {
+	col-offset = <5>;
+};
+
+/* No encoder hardware on this build.
+&right_encoder {
+	status = "okay";
+};
+*/
