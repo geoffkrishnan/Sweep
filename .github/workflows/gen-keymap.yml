@@ -19,13 +19,14 @@ jobs:
       - name: Parse keymap
         run: keymap parse -c 10 -z config/sweep.keymap >sweep_keymap.yaml
       - name: Draw keymap
-        run: keymap draw --ortho-layout "{split: true, rows: 3, columns: 5, thumbs: 3}" sweep_keymap.yaml >images/sweep-keymap.svg
+        run: |
+          keymap draw --ortho-layout "{split: true, rows: 3, columns: 5, thumbs: 3}" sweep_keymap.yaml >images/sweep-keymap.svg
       - name: Commit & push if svg changed
         run: |
             git config user.name "github-actions[bot]"
             git config user.email "github-actions[bot]@users.noreply.github.com"
-            if ! git diff --quiet -- images/sweep-keymap.svg; then
-              git add images/sweep-keymap.svg
+            git add images/sweep-keymap.svg
+            if ! git diff --cached --quiet -- images/sweep-keymap.svg; then
               git commit -m "feat: regen keymap"
               git push
             fi
