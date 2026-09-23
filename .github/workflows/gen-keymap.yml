@@ -19,7 +19,7 @@ jobs:
       - name: Parse keymap
         run: keymap parse -c 10 -z config/sweep.keymap >sweep_keymap.yaml
       - name: Draw keymap
-        run: keymap draw sweep_keymap.yaml >images/sweep-keymap.svg
+        run: keymap draw -k ferris/sweep sweep_keymap.yaml >images/sweep-keymap.svg
       - name: Commit & push if svg changed
         run: |
             git config user.name "github-actions[bot]"
